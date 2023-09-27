@@ -1,0 +1,16 @@
+### Basic GDB Commands
+- `break` or `b`
+	- Using this command we can set breakpoints in the code. Breakpoints tell the program to stop when they are reached so that we can examine which steps the program takes or what variables look like at specific points during the program's runtime.
+	- You can set a breakpoint at a specific line with `break x` where `x` is the line number, or you can use a function name like `break square` to tell the function to break when it enters the `square` method.
+- `run` or `r`
+	- The `run` command starts running the program, until it finishes or hits a breakpoint.
+	- You can also add command line arguments when you run the program this way. Ex. `run arg1`
+	- If you use the `run` command while already in the middle of running a program, you can restart the program.
+- `list` or `l`
+	- The `list` command shows the source code a few lines before and after the current execution line. This gives context to where you are in the program.
+	- You can also specify a range of lines to show. Ex. `list 1,20` will display lines 1 through 20.
+- `next` or `n`
+	- The `next` command moves the program one step forward. To go through the program line by line, you can use `next` over and over.
+- `print` or `p`
+	- The `print` command gives the current value of a specified variable. In the example code given for this part of the project, we can set breakpoints or use `next` to move through the program, and use `print i` to see how the value of `i` changes in the main function.
+	- You can also do things like basic operations `print x + y` or see the address of a variable `print &i` using this command. 
