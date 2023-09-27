@@ -24,8 +24,5 @@ int main()
     outputIntegerDifference(10, 3);
     outputFloatDivision(1.0, 3.0);
 
-    // // print a newline at the end
-    // printf("\n");
-
     return 0;
 }
