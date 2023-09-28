@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 //takes the start and end of a word, iterates through the letters, reversing the word
 void reverseWord(char *begin, char *end) {
@@ -27,18 +28,18 @@ void replaceUnderscoresWithSpaces(char *string)
     }
 }
 
-void decoding(char *string)
+void decoding(char *word)
 {
-    char *string_ptr = string;
+    char *word_ptr = word;
     char *begin, *end; // iterate through string using two position pointers
-    begin = string;
+    begin = word;
     end = NULL;
 
     while (1)
     {
-        if (isalpha(*string_ptr)) 
+        if (isalpha(*word_ptr))
         {
-            *string_ptr = toupper(*string_ptr); // change to upper case
+            *word_ptr = toupper(*word_ptr); // change letter to upper case
         }
         else
         {
@@ -46,19 +47,20 @@ void decoding(char *string)
             {
                 reverseWord(begin, end);
             }
-            if (*string_ptr == '\0' || *string_ptr == '\n') 
+            if (*word_ptr == '\0' || *word_ptr == '\n')
             {
-                break; // end of the string/newline = break the loop
+                // end of the string/newline => break the loop
+                break; 
             }
-            begin = string_ptr + 1; // increment
+            begin = word_ptr + 1; // move through the word
         }
 
-        end = string_ptr;
-        string_ptr ++;
+        end = word_ptr;
+        word_ptr++;
     }
 
     //after reversing all of the text, turn underscores into spaces
-    replaceUnderscoresWithSpaces(string);
+    replaceUnderscoresWithSpaces(word);
 }
 
 int main()
@@ -80,17 +82,16 @@ int main()
         return 0;
     }
 
+    char word[100];
 
-    char temp[100];
-
-    // fgets = file get string; reads a line of text from a file
-        // temp = where the string will be stored
-        // 100 = max size
+    // fgets = "file get string"; reads a word from the file
+        // word = where the string will be stored
+        // sizeof(word) = max size
         // fin = the file to be read from
-    while (fgets(temp, sizeof(temp), fin) != NULL)
+    while (fgets(word, sizeof(word), fin) != NULL)
     {
-        decoding(temp);
-        fprintf(fout, temp); //print to file
+        decoding(word);
+        fprintf(fout, word); //print word to output file
     }
 
     fclose(fin);
