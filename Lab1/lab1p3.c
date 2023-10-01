@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-//takes the start and end of a word, iterates through the letters, reversing the word
+// takes the start and end of a word, iterates through the letters, reversing the word
 void reverseWord(char *begin, char *end) {
     char temp;
     while (begin < end) { // swap beginning and end, until the pointers meet
-        // assign values
+        // swap values
         temp = *begin;
         *begin = *end;
         *end = temp;
@@ -23,11 +23,12 @@ void replaceUnderscoresWithSpaces(char *string)
     {
         if (string[i] == '_')
         {
-            string[i] = ' '; // Replace underscore with space
+            string[i] = ' '; // replace underscore with space
         }
     }
 }
 
+// takes a string and reverses it according to the cypher rubric
 void decoding(char *word)
 {
     char *word_ptr = word;
@@ -41,7 +42,7 @@ void decoding(char *word)
         {
             *word_ptr = toupper(*word_ptr); // change letter to upper case
         }
-        else
+        else //if not alphanumeric, then we have found the end of a word
         {
             if (begin != end) 
             {
@@ -91,7 +92,9 @@ int main()
     while (fgets(word, sizeof(word), fin) != NULL)
     {
         decoding(word);
-        fprintf(fout, word); //print word to output file
+        // print word to output file
+        // "%s" clarifies the word should be printed as a string, so things like % signs stay intact
+        fprintf(fout, "%s", word);
     }
 
     fclose(fin);
