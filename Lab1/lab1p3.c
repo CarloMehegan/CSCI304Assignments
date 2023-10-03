@@ -69,20 +69,20 @@ int main()
     // open input and output files (and make sure they exist)
     FILE *fin, *fout;
 
-    char finName[] = "lab1p3in";
-    char foutName[] = "lab1p3out";
+    const char F_IN_NAME[] = "lab1p3in";
+    const char F_OUT_NAME[] = "lab1p3out";
 
-    fin = fopen(finName, "r");
+    fin = fopen(F_IN_NAME, "r");
     if (!fin)
     {
-        printf("Input file %s does not exist.\n", finName);
+        printf("Input file %s does not exist.\n", F_IN_NAME);
         return 0;
     }
 
-    fout = fopen(foutName, "w");
+    fout = fopen(F_OUT_NAME, "w");
     if (!fout)
     {
-        printf("Output file %s does not exist.\n", foutName);
+        printf("Output file %s does not exist.\n", F_OUT_NAME);
         return 0;
     }
 
