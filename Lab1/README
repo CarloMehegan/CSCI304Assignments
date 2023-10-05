@@ -2,12 +2,14 @@
 Carlo Mehegan
 October 3, 2023
 
-Total elapsed work time: 11h47m
-- Lab work: 8h58m
+Total elapsed work time: 11h59m
+- Lab work: 9h10m
 - Studying C: 2h49m
 
 Concerns, discoveries, comments:
-- 
+- In an email Prof. Ren said we could get bonus credit in part 3 for dealing with certain corner cases. My program should be able to handle these cases.
+- Prof. Ren also said that we can get bonus credit in part 4 if we properly deallocate memory. Based on my use of the valgrind tool, it looks like all of the allocated memory is properly deallocated at the end of the program.
+- Is there extra credit for using version control? I was able to get git working between my computer and the lab machines and it was very helpful
 
 Direction on how to run solutions:
 - Part 3 requires a "lab1p3in" and "lab1p3out" inside of the same directory as the program
