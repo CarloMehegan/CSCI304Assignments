@@ -249,13 +249,13 @@ int bang(int x)
 
   // The only case where the sign bit does not change when we negate
   // a twos complement integer is when the integer is zero.
-  // We can use a bitwise OR to detect this
-  int signed_bit = (x | (-x + 1)) >> 31;
+  //
+  int signed_bit = (x | (~x + 1)) >> 31;
 
   // signed_bit = 0 when x is zero
   // signed_bit = 1 when x is nonzero
 
-  return ~signed_bit;
+  return ~signed_bit & 1;
 }
 
 /*
@@ -271,7 +271,8 @@ int leastBitPos(int x)
   // we can use twos complement properties to solve this problem too.
   // because you add 1 to get the complement of a number,
   // the least significant 1 does not flip after conversion
-  return (x | (-x + 1));
+  int inverted = x | (~x + 1);
+  return inverted & x & (~inverted + 1);
 }
 
 /*
@@ -358,7 +359,7 @@ int isGreater(int x, int y)
   int signed_bit_y = y >> 31;
   int different_signs = signed_bit_x ^ signed_bit_y;
 
-  int diff = x + (~y + 1); // difference between x and y
+  int diff = x + (~y); // difference between x and y
   int signed_bit_diff = diff >> 31;
 
   // if x and y have the same sign and their difference is negative, x < y
@@ -381,7 +382,7 @@ int isGreater(int x, int y)
 int isNegative(int x)
 {
   // simply look at the signed bit. if it is 1, then x is negative
-  return (x >> 31);
+  return (x >> 31) & 1;
 }
 
 /*
