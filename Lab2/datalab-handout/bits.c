@@ -340,9 +340,9 @@ int addOK(int x, int y)
   // then there is overflow
   int x_y_different_signs = (signed_bit_x ^ signed_bit_y);
   int sum_x_different_signs = (signed_bit_x ^ signed_bit_sum);
-  int overflow = !x_y_different_signs & sum_x_different_signs;
+  int overflow = (!x_y_different_signs) & sum_x_different_signs;
 
-  return !overflow; // TODO do i need to negate this
+  return !overflow;
 }
 
 /*
