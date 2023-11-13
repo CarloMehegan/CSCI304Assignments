@@ -1,8 +1,8 @@
-/* 
- * CS:APP Data Lab 
- * 
+/*
+ * CS:APP Data Lab
+ *
  * <Please put your name and userid here>
- * 
+ *
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
  *
@@ -10,7 +10,7 @@
  * compiler. You can still use printf for debugging without including
  * <stdio.h>, although you might get a compiler warning. In general,
  * it's not good practice to ignore compiler warnings, but in this
- * case it's OK.  
+ * case it's OK.
  */
 
 #if 0
@@ -24,11 +24,11 @@ You will provide your solution to the Data Lab by
 editing the collection of functions in this source file.
 
 INTEGER CODING RULES:
- 
+
   Replace the "return" statement in each function with one
-  or more lines of C code that implements the function. Your code 
+  or more lines of C code that implements the function. Your code
   must conform to the following style:
- 
+
   int Funct(arg1, arg2, ...) {
       /* brief description of how your implementation works */
       int var1 = Expr1;
@@ -47,7 +47,7 @@ INTEGER CODING RULES:
   2. Function arguments and local variables (no global variables).
   3. Unary integer operations ! ~
   4. Binary integer operations & ^ | + << >>
-    
+
   Some of the problems restrict the set of allowed operators even further.
   Each "Expr" may consist of multiple operators. You are not restricted to
   one operator per line.
@@ -62,7 +62,7 @@ INTEGER CODING RULES:
   7. Use any data type other than int.  This implies that you
      cannot use arrays, structs, or unions.
 
- 
+
   You may assume that your machine:
   1. Uses 2s complement, 32-bit representations of integers.
   2. Performs right shifts arithmetically.
@@ -106,53 +106,60 @@ You are expressly forbidden to:
 
 
 NOTES:
-  1. Use the dlc (data lab checker) compiler (described in the handout) to 
+  1. Use the dlc (data lab checker) compiler (described in the handout) to
      check the legality of your solutions.
   2. Each function has a maximum number of operators (! ~ & ^ | + << >>)
-     that you are allowed to use for your implementation of the function. 
-     The max operator count is checked by dlc. Note that '=' is not 
+     that you are allowed to use for your implementation of the function.
+     The max operator count is checked by dlc. Note that '=' is not
      counted; you may use as many of these as you want without penalty.
   3. Use the btest test harness to check your functions for correctness.
   4. Use the BDD checker to formally verify your functions
   5. The maximum number of ops for each function is given in the
-     header comment for each function. If there are any inconsistencies 
+     header comment for each function. If there are any inconsistencies
      between the maximum ops in the writeup and in this file, consider
      this file the authoritative source.
 
 /*
  * STEP 2: Modify the following functions according the coding rules.
- * 
+ *
  *   IMPORTANT. TO AVOID GRADING SURPRISES:
  *   1. Use the dlc compiler to check that your solutions conform
  *      to the coding rules.
- *   2. Use the BDD checker to formally verify that your solutions produce 
+ *   2. Use the BDD checker to formally verify that your solutions produce
  *      the correct answers.
  */
 
-
 #endif
-/* 
- * bitAnd - x&y using only ~ and | 
+/*
+ * bitAnd - x&y using only ~ and |
  *   Example: bitAnd(6, 5) = 4
  *   Legal ops: ~ |
  *   Max ops: 8
  *   Rating: 1
  */
-int bitAnd(int x, int y) {
+int bitAnd(int x, int y)
+{
+  // use De Morgan's Law:
+  // ~(A & B) = (~A | ~B)
+  // therefore (A & B) = ~(~A | ~B)
   return ~(~x | ~y);
-  //return 2;
 }
-/* 
+
+/*
  * copyLSB - set all bits of result to least significant bit of x
  *   Example: copyLSB(5) = 0xFFFFFFFF, copyLSB(6) = 0x00000000
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 5
  *   Rating: 2
  */
-int copyLSB(int x) {
-	return	(x << 31) >> 31;
+int copyLSB(int x)
+{
+  // left shifting 31 bits puts the LSB in the signed bit place
+  // arithmetic right shifting 31 bits will put the signed bit in every place
+  return (x << 31) >> 31;
 }
-/* 
+
+/*
  * getByte - Extract byte n from word x
  *   Bytes numbered from 0 (LSB) to 3 (MSB)
  *   Examples: getByte(0x12345678,1) = 0x56
@@ -160,21 +167,31 @@ int copyLSB(int x) {
  *   Max ops: 6
  *   Rating: 2
  */
-int getByte(int x, int n) {
-  return 2;
+int getByte(int x, int n)
+{
+  // we will shift the desired byte to the LSB position
+  // we will shift by 0, 8, 16, or 24 bits
+  int amountToShift = n << 3;
+
+  // use 0xFF to retain just the byte we want to return in the result
+  return (x >> amountToShift) & 0x000000FF;
 }
-/* 
- * isEqual - return 1 if x == y, and 0 otherwise 
+
+/*
+ * isEqual - return 1 if x == y, and 0 otherwise
  *   Examples: isEqual(5,5) = 1, isEqual(4,5) = 0
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 5
  *   Rating: 2
  */
-int isEqual(int x, int y) {
-  return 2;
+int isEqual(int x, int y)
+{
+  // use XOR to detect differences between x and y
+  return !(x ^ y);
 }
-/* 
- * bitMask - Generate a mask consisting of all 1's 
+
+/*
+ * bitMask - Generate a mask consisting of all 1's
  *   lowbit and highbit
  *   Examples: bitMask(5,3) = 0x38
  *   Assume 0 <= lowbit <= 31, and 0 <= highbit <= 31
@@ -183,60 +200,106 @@ int isEqual(int x, int y) {
  *   Max ops: 16
  *   Rating: 3
  */
-int bitMask(int highbit, int lowbit) {
-  return 2;
+int bitMask(int highbit, int lowbit)
+{
+  // set all bits to 1
+  int allOnes = ~0;
+
+  // mask of 1s to the left of the high bit
+  int left = (allOnes << highbit) << 1;
+
+  // mask of 1s to the left and including the low bit
+  int right = allOnes << lowbit;
+
+  // by negating the left mask, we can get the
+  // desired mask by looking at where the 1s overlap
+  return (~left & right);
 }
-/* 
+
+/*
  * reverseBytes - reverse the bytes of x
  *   Example: reverseBytes(0x01020304) = 0x04030201
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 25
  *   Rating: 3
  */
-int reverseBytes(int x) {
-  return 2;
+int reverseBytes(int x)
+{
+  // just extract each byte, then combine them in reverse order
+  // repetitive, but simplest method / most readable
+  int byte1 = (x >> 24) & 0xFF;
+  int byte2 = (x >> 16) & 0xFF;
+  int byte3 = (x >> 8) & 0xFF;
+  int byte4 = (x >> 0) & 0xFF;
+
+  return (byte4 << 24) | (byte3 << 16) | (byte2 << 8) | byte1;
 }
-/* 
+
+/*
  * bang - Compute !x without using !
  *   Examples: bang(3) = 0, bang(0) = 1
  *   Legal ops: ~ & ^ | + << >>
  *   Max ops: 12
- *   Rating: 4 
+ *   Rating: 4
  */
-int bang(int x) {
-  return 2;
+int bang(int x)
+{
+  // We want to find if x is zero or not.
+  // We can use the properties of twos complement to do this.
+
+  // The only case where the sign bit does not change when we negate
+  // a twos complement integer is when the integer is zero.
+  // We can use a bitwise OR to detect this
+  int signed_bit = (x | (-x + 1)) >> 31;
+
+  // signed_bit = 0 when x is zero
+  // signed_bit = 1 when x is nonzero
+
+  return ~signed_bit;
 }
-/* 
+
+/*
  * leastBitPos - return a mask that marks the position of the
  *               least significant 1 bit. If x == 0, return 0
  *   Example: leastBitPos(96) = 0x20
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 6
- *   Rating: 2 
+ *   Rating: 2
  */
-int leastBitPos(int x) {
-  return 2;
+int leastBitPos(int x)
+{
+  // we can use twos complement properties to solve this problem too.
+  // because you add 1 to get the complement of a number,
+  // the least significant 1 does not flip after conversion
+  return (x | (-x + 1));
 }
-/* 
- * minusOne - return a value of -1 
+
+/*
+ * minusOne - return a value of -1
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 2
  *   Rating: 1
  */
-int minusOne(void) {
-  return 2;
+int minusOne(void)
+{
+  // in two's complement, -1 is represented with all 1s
+  return ~0;
 }
-/* 
- * TMax - return maximum two's complement integer 
+
+/*
+ * TMax - return maximum two's complement integer
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 4
  *   Rating: 1
  */
-int tmax(void) {
-  return 2;
+int tmax(void)
+{
+  // sign bit needs to be 0, and everything after is 1
+  return ~(1 << 31);
 }
-/* 
- * fitsBits - return 1 if x can be represented as an 
+
+/*
+ * fitsBits - return 1 if x can be represented as an
  *  n-bit, two's complement integer.
  *   1 <= n <= 32
  *   Examples: fitsBits(5,3) = 0, fitsBits(-4,3) = 1
@@ -244,45 +307,83 @@ int tmax(void) {
  *   Max ops: 15
  *   Rating: 2
  */
-int fitsBits(int x, int n) {
-	int negN = ~n + 1;
-	int shiftVal = 32 + negN;
-	int shiftLeft = x << shiftVal;
-	int shiftRight = shiftLeft >> shiftVal;
-	int same = shiftRight ^ x;
-	return !same;
+int fitsBits(int x, int n)
+{
+  int negN = ~n + 1;                      // negative n
+  int shiftVal = 32 + negN;               // 32 - n
+  int shiftLeft = x << shiftVal;          // discard bits that wouldnt fit
+  int shiftRight = shiftLeft >> shiftVal; // attempt to restore value
+  int same = shiftRight ^ x;              // check if any bits were discarded
+  return !same;
 }
-/* 
+
+/*
  * addOK - Determine if can compute x+y without overflow
  *   Example: addOK(0x80000000,0x80000000) = 0,
- *            addOK(0x80000000,0x70000000) = 1, 
+ *            addOK(0x80000000,0x70000000) = 1,
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 20
  *   Rating: 3
  */
-int addOK(int x, int y) {
-  return 2;
+int addOK(int x, int y)
+{
+  // we can compare the sign bit to see if there was overflow
+  int signed_bit_x = x >> 31;
+  int signed_bit_y = y >> 31;
+
+  int sum = x + y;
+  int signed_bit_sum = sum >> 31;
+
+  // if x and y have the same sign,
+  // but the sum sign is different,
+  // then there is overflow
+  int x_y_different_signs = (signed_bit_x ^ signed_bit_y);
+  int sum_x_different_signs = (signed_bit_x ^ signed_bit_sum);
+  int overflow = !x_y_different_signs & sum_x_different_signs;
+
+  return !overflow; // TODO do i need to negate this
 }
-/* 
- * isGreater - if x > y  then return 1, else return 0 
+
+/*
+ * isGreater - if x > y  then return 1, else return 0
  *   Example: isGreater(4,5) = 0, isGreater(5,4) = 1
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 24
  *   Rating: 3
  */
-int isGreater(int x, int y) {
-  return 2;
+int isGreater(int x, int y)
+{
+  // we can compare sign bits again to solve this problem
+  int signed_bit_x = x >> 31;
+  int signed_bit_y = y >> 31;
+  int different_signs = signed_bit_x ^ signed_bit_y;
+
+  int diff = x + (~y + 1); // difference between x and y
+  int signed_bit_diff = diff >> 31;
+
+  // if x and y have the same sign and their difference is negative, x < y
+  int same_signs_negative_diff = (~different_signs) & signed_bit_diff;
+
+  // if x and y have diff signs and x is negative, x < y
+  int diff_signs_negative_x = different_signs & signed_bit_x;
+
+  // if neither of these two statements are true, then x > y
+  return !(same_signs_negative_diff | diff_signs_negative_x);
 }
-/* 
- * isNegative - return 1 if x < 0, return 0 otherwise 
+
+/*
+ * isNegative - return 1 if x < 0, return 0 otherwise
  *   Example: isNegative(-1) = 1.
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 6
  *   Rating: 2
  */
-int isNegative(int x) {
-  return 2;
+int isNegative(int x)
+{
+  // simply look at the signed bit. if it is 1, then x is negative
+  return (x >> 31);
 }
+
 /*
  * multFiveEighths - multiplies by 5/8 rounding toward 0.
  *   Should exactly duplicate effect of C expression (x*5/8),
@@ -294,10 +395,25 @@ int isNegative(int x) {
  *   Max ops: 12
  *   Rating: 3
  */
-int multFiveEighths(int x) {
-  return 2;
+int multFiveEighths(int x)
+{
+  // need to preserve the original sign, so save sign and abs value of x
+  int signed_bit_x = x >> 31;
+  // this logic negates x, but only if it is negative. this gives us |x|
+  int abs_x = (x ^ signed_bit_x) + (signed_bit_x);
+
+  // multiply by five (;eft shift twice, add once)
+  int five_abs_x = (abs_x << 2) + abs_x;
+
+  // divide by 8 (right shift thrice)
+  int eight_fifths_abs_x = (five_abs_x >> 3);
+
+  // apply the original sign and return
+  // using the same logic as before: negating only if x was originally negative
+  return (eight_fifths_abs_x ^ signed_bit_x) + (signed_bit_x);
 }
-/* 
+
+/*
  * sm2tc - Convert from sign-magnitude to two's complement
  *   where the MSB is the sign bit
  *   Example: sm2tc(0x80000005) = -5.
@@ -305,13 +421,23 @@ int multFiveEighths(int x) {
  *   Max ops: 15
  *   Rating: 4
  */
-int sm2tc(int x) {
-	int signBit = x >> 31; //extend the sign bit to all bits. If x is negative, signBit is all 1s; otherwise, signBit is all 0s
-	int maskSignBit = ~(1 << 31); //a mask to remove sign bit
-	int reverse = ~(x & maskSignBit) + 1; //get 2's complement for negative cases
-	return ((~signBit) & x) | (signBit & reverse); //if positive or 0, return x; else, return reverse.
+int sm2tc(int x)
+{
+  // extend the sign bit to all bits.
+  // If x is negative, signBit is all 1s; otherwise, signBit is all 0s
+  int signBit = x >> 31;
+
+  // a mask to remove sign bit
+  int maskSignBit = ~(1 << 31);
+
+  // get 2's complement for negative cases
+  int reverse = ~(x & maskSignBit) + 1;
+
+  // if positive or 0, return x; else, return reverse.
+  return ((~signBit) & x) | (signBit & reverse);
 }
-/* 
+
+/*
  * float_i2f - Return bit-level equivalent of expression (float) x
  *   Result is returned as unsigned int, but
  *   it is to be interpreted as the bit-level representation of a
@@ -320,6 +446,7 @@ int sm2tc(int x) {
  *   Max ops: 30
  *   Rating: 4
  */
-unsigned float_i2f(int x) {
+unsigned float_i2f(int x)
+{
   return 2;
 }
