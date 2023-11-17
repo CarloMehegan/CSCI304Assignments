@@ -398,20 +398,12 @@ int isNegative(int x)
  */
 int multFiveEighths(int x)
 {
-  // need to preserve the original sign, so save sign and abs value of x
-  int signed_bit_x = x >> 31;
-  // this logic negates x, but only if it is negative. this gives us |x|
-  int abs_x = (x ^ signed_bit_x) + (signed_bit_x);
+  int mult = (x << 2) + x; //multiply x by 5
+  int rounding = mult >> 31 & 0x7; // get the sign for rounding
+  
+  int rounded = (mult + rounding) >> 3; //divide by 8
 
-  // multiply by five (;eft shift twice, add once)
-  int five_abs_x = (abs_x << 2) + abs_x;
-
-  // divide by 8 (right shift thrice)
-  int eight_fifths_abs_x = (five_abs_x >> 3);
-
-  // apply the original sign and return
-  // using the same logic as before: negating only if x was originally negative
-  return (eight_fifths_abs_x ^ signed_bit_x) + (signed_bit_x);
+  return rounded;
 }
 
 /*
